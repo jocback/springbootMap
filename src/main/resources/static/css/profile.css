@@ -1,0 +1,66 @@
+.top-header--transparent {
+    background-color: transparent;
+}
+
+.profile .profile__header {
+    height: 80vh;
+    background-image: url('https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1135824/580/386/m1/fpnw/wm0/cover-.jpg?1459430243&s=37e24e87e07fccff592af0d4d2ccf2f1');
+    background-size: cover;
+    background-position: center center;
+    width: 100%;
+    position: relative;
+    top: -65px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.profile__header .profile__header-container {
+    text-align: center;
+    position: relative;
+    bottom: -60px;
+}
+
+.profile__header-container img {
+    width: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.profile .profile__container{
+    margin-top:20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile__container input{
+    padding:5px;
+    margin-bottom: 20px;
+}
+
+.profile__actions{
+    display: flex;
+}
+
+.profile__action{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.profile__action-circle{
+    background-color: #f2f2f2;
+    padding:10px;
+    border-radius: 50%;
+    color:#523737;
+    margin-bottom: 15px;
+}
+
+.profile__action-title{
+    font-size: 12px;
+    font-weight: 600;
+}

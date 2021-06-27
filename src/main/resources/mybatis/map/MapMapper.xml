@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springbootjsp.map.mapper.MapMapper">
+
+    <!-- 매물시퀀스조회 -->
+    <select id="selectProductId" resultType="string">
+        SELECT MAX(product_id)+1 FROM product_infr
+    </select>
+
+    <!-- 매물 조회 -->
+    <select id="selectProductList" resultType="com.example.springbootjsp.map.vo.ProductVO" parameterType="com.example.springbootjsp.map.vo.SearchVO">
+        SELECT A.PRODUCT_ID
+             , A.CD_ID
+             , A.CD_NM
+             , PI.PRODUCT_NM
+             , PI.ADDRESS
+             , PI.MEMO
+             , PI.R
+             , PI.LONGITUDE
+             , PI.LATITUDE
+             , PI.PHONE_NUM
+             , PI.PRODUCT_YN
+             , PI.UPDER AS UPDER1
+             , UI.USER_NM AS UPDER
+             , DATE_FORMAT(PI.CRCT_DT, '%y-%m-%d %h:%i:%s') AS CRCT_DT
+             , (SELECT GROUP_CONCAT(FI.STOR_FILE_NM SEPARATOR ',') AS FILE_PATH
+                FROM FILE_INFR FI
+                WHERE FI.PRODUCT_ID = PI.PRODUCT_ID) AS FILE_PATH
+        FROM (SELECT PRODUCT_ID
+                   , GROUP_CONCAT(CI.CD_ID SEPARATOR ',') AS CD_ID
+                   , GROUP_CONCAT(CI.CD_NM SEPARATOR ',') AS CD_NM
+              FROM PRODUCT_OPTION_INFR POI
+                 , CD_INFR CI
+              WHERE POI.OPTION_ID = CI.CD_ID
+              GROUP BY POI.PRODUCT_ID) A
+           , PRODUCT_INFR PI
+           , USER_INFR UI
+        WHERE A.PRODUCT_ID = PI.PRODUCT_ID
+          AND UI.USER_ID = PI.UPDER
+        <if test="lat1 != '' and lat2 != '' and lng1 != '' and lng2 != ''" >
+            AND PI.latitude <![CDATA[>=]]> #{lat1}
+            AND PI.latitude <![CDATA[<=]]> #{lat2}
+            AND PI.longitude <![CDATA[>=]]> #{lng1}
+            AND PI.longitude  <![CDATA[<=]]> #{lng2}
+        </if>
+        <choose>
+            <!--// 20191006 투자 구옥 추가 hodec -->
+            <when test=" searchType != null and searchType == 'all'">
+                and PI.product_yn = 'N'
+            </when>
+            <when test=" searchType != null and searchType == 'new'">
+                and A.cd_nm not like '%구옥%'
+                AND PI.product_yn = 'N'
+            </when>
+            <when test=" searchType != null and searchType == 'old'">
+                and A.cd_nm like '%구옥%'
+                and PI.product_yn = 'N'
+            </when>
+            <when test=" searchType != null and searchType == 'rental'">
+                and A.cd_nm like '%전세%'
+                and PI.product_yn = 'N'
+            </when>
+
+            <when test=" searchType != null and searchType == 'month'">
+                and A.cd_nm like '%월세%'
+                and PI.product_yn = 'N'
+            </when>
+            <when test=" searchType != null and searchType == 'invest'">
+                and A.cd_nm like '%투자%'
+                and PI.product_yn = 'N'
+            </when>
+            <when test=" searchType != null and searchType == 'comp'">
+                and PI.product_yn = 'Y'
+            </when>
+            <!-- //끝 -->
+        </choose>
+        <if test=" searchInput != null and searchInput != '' ">
+            and ( PI.address like '%${searchInput}%' or PI.product_nm like '%${searchInput}%' or PI.memo like '%${searchInput}%' or UI.user_nm like '%${searchInput}%')
+        </if>
+        <if test=" searchtypeList != null ">
+            and
+            <foreach collection="searchtypeList" item="item" index="index" separator="AND" open="(" close=")">
+                A.cd_nm like '%${item}%'
+            </foreach>
+        </if>
+        order by PI.crct_dt desc
+    </select>
+
+    <!-- 매물등록 -->
+    <insert id="insertProductInfo" parameterType="com.example.springbootjsp.map.vo.ProductVO">
+        insert into product_infr
+        (
+            product_id,
+            product_nm,
+            address,
+            r,
+            memo,
+            longitude,
+            latitude,
+            phone_num,
+            product_yn,
+            reger,
+            rgst_dt,
+            upder,
+            crct_dt
+        )
+        values  (
+                    #{productId},
+                    #{creProNm},
+                    #{creAddress},
+                    #{creR},
+                    #{creMemo},
+                    #{creLog},
+                    #{creLat},
+                    #{crePhoneNum},
+                    'N',
+                    #{userId},
+                    NOW(),
+                    #{userId},
+                    NOW()
+                )
+    </insert>
+
+    <!-- 매물 수정 -->
+    <update id="updateProductInfo" parameterType="com.example.springbootjsp.map.vo.ProductVO">
+        update 	product_infr
+        set		 product_nm = #{creProNm},
+                    address = #{creAddress},
+                    r = #{creR},
+                    memo = #{creMemo},
+                    longitude = #{creLog},
+                    latitude = #{creLat},
+                    phone_num = #{crePhoneNum},
+                    product_yn = #{productYn},
+                    upder = #{userId},
+                    crct_dt = NOW()
+        where	product_id = #{productId}
+    </update>
+
+    <!-- 매물 삭제 -->
+    <update id="deleteProductInfo" parameterType="string">
+        update product_infr set
+            product_yn = 'D'
+        where product_id = #{productId}
+    </update>
+
+    <!-- 옵션 등록 -->
+    <insert id="insertProductOptionInfo" parameterType="com.example.springbootjsp.map.vo.OptionVO">
+        insert into product_option_infr
+        (
+            product_id,
+            option_id,
+            reger,
+            rgst_dt,
+            upder,
+            crct_dt
+        )
+        values  (
+                    #{productId},
+                    #{option},
+                    #{userId},
+                    now(),
+                    #{userId},
+                    now()
+                )
+    </insert>
+
+    <!-- 옵션 삭제 -->
+    <delete id="deleteProductOptionInfo" parameterType="string">
+        delete from product_option_infr
+        where 1=1
+          and product_id = #{productId}
+    </delete>
+
+    <!-- 매물 히스토리 등록 -->
+    <insert id="updateProductHistInfo" parameterType="com.example.springbootjsp.map.vo.ProductVO">
+        insert into product_infr_hs
+        (his_seq,
+         product_id,
+         product_nm,
+         address,
+         r,
+         memo,
+         longitude,
+         latitude,
+         phone_num,
+         option_nm,
+         product_yn,
+         reger,
+         rgst_dt,
+         upder,
+         crct_dt)
+        select (SELECT Max(his_seq) + 1
+                from   product_infr_hs) as his_seq,
+               a.product_id,
+               b.product_nm,
+               b.address,
+               b.r,
+               b.memo,
+               b.longitude,
+               b.latitude,
+               b.phone_num,
+               a.cd_nm                  as option_nm,
+               b.product_yn,
+               #{userId},
+               now(),
+               #{userId},
+               now()
+        from   (select a.product_id,
+                       group_concat(b.cd_id separator ',')as cd_id,
+                       group_concat(b.cd_nm separator ',')as cd_nm
+                from   product_option_infr a,
+                       cd_infr b
+                where  a.option_id = b.cd_id
+                group  by a.product_id)a,
+               product_infr b
+        where  a.product_id = b.product_id
+          and b.product_id = #{productId}
+    </insert>
+
+    <!-- 매물 히스토리 삭제 -->
+    <delete id="deleteProductInfo_Hs" parameterType="string">
+        delete
+        from product_infr_hs
+        where product_id = #{productId}
+    </delete>
+
+    <!-- 첨부파일 조회 -->
+    <select id="getProductFileList" parameterType="string" resultType="com.example.springbootjsp.map.vo.FileVO">
+        select product_id,
+               file_seq,
+               file_path,
+               rgst_file_nm,
+               stor_file_nm,
+               file_size,
+               file_ord,
+               reger,
+               rgst_dt,
+               upder,
+               crct_dt
+        from file_infr
+        where product_id = #{productId}
+        order by file_ord
+    </select>
+
+    <!-- 첨부파일 상세조회 -->
+    <select id="getFileInfo" parameterType="com.example.springbootjsp.map.vo.FileVO" resultType="com.example.springbootjsp.map.vo.FileVO">
+        select product_id,
+               file_seq,
+               file_path,
+               rgst_file_nm,
+               stor_file_nm,
+               file_size,
+               file_ord,
+               reger,
+               rgst_dt,
+               upder,
+               crct_dt
+        FROM FILE_INFR
+        WHERE STOR_FILE_NM = #{storFileNm}
+    </select>
+
+    <!-- 파일 업로드 -->
+    <insert id="insertFileInfo" parameterType="com.example.springbootjsp.map.vo.FileVO">
+        insert into file_infr
+        (
+            product_id,
+            file_seq,
+            file_path,
+            rgst_file_nm,
+            stor_file_nm,
+            file_size,
+            file_ord,
+            reger,
+            rgst_dt,
+            upder,
+            crct_dt
+        )
+        select
+            #{productId},
+            (SELECT MAX(file_seq)+1 FROM file_infr) AS fileSeq,
+            #{realpath},
+            #{orgName},
+            #{saveName},
+            #{sizeInBytes},
+            #{fileOrd},
+            #{userId},
+            now(),
+            #{userId},
+            now()
+        from dual;
+    </insert>
+
+    <!-- 파일 삭제 -->
+    <delete id="deleteProductFileInfo" parameterType="string">
+        delete from file_infr
+        where 1=1
+          and product_id = #{productId}
+    </delete>
+
+</mapper>
