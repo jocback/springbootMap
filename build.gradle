@@ -27,9 +27,6 @@ dependencies {
     // JSTL
     compile('javax.servlet:jstl')
 
-    // Hibernate
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
-
     // DB
     compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.0'
     compile 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.3'
