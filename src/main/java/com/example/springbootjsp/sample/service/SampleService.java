@@ -16,4 +16,8 @@ public class SampleService {
     public List<SampleVO> selectTest() {
         return mapper.selectTest();
     }
+
+    public String selectUserNm() {
+        return mapper.selectUserNm();
+    }
 }

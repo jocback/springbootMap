@@ -35,4 +35,13 @@ public class SampleController {
         List<SampleVO> sampleList = sampleService.selectTest();
         return sampleList;
     }
+
+    @RequestMapping(value="/sample/userNm", method = RequestMethod.GET)
+    @ResponseBody
+    public String userNm() {
+        String userNm = sampleService.selectUserNm();
+        System.out.println(userNm);
+        return userNm;
+    }
+
 }
