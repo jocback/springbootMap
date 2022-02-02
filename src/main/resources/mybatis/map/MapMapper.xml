@@ -24,17 +24,17 @@
              , UI.USER_NM AS UPDER
              , DATE_FORMAT(PI.CRCT_DT, '%y-%m-%d %h:%i:%s') AS CRCT_DT
              , (SELECT GROUP_CONCAT(FI.STOR_FILE_NM SEPARATOR ',') AS FILE_PATH
-                FROM FILE_INFR FI
+                FROM file_infr FI
                 WHERE FI.PRODUCT_ID = PI.PRODUCT_ID) AS FILE_PATH
         FROM (SELECT PRODUCT_ID
                    , GROUP_CONCAT(CI.CD_ID SEPARATOR ',') AS CD_ID
                    , GROUP_CONCAT(CI.CD_NM SEPARATOR ',') AS CD_NM
-              FROM PRODUCT_OPTION_INFR POI
-                 , CD_INFR CI
+              FROM product_option_infr POI
+                 , cd_infr CI
               WHERE POI.OPTION_ID = CI.CD_ID
               GROUP BY POI.PRODUCT_ID) A
-           , PRODUCT_INFR PI
-           , USER_INFR UI
+           , product_infr PI
+           , user_infr UI
         WHERE A.PRODUCT_ID = PI.PRODUCT_ID
           AND UI.USER_ID = PI.UPDER
         <if test="lat1 != '' and lat2 != '' and lng1 != '' and lng2 != ''" >
@@ -256,7 +256,7 @@
                rgst_dt,
                upder,
                crct_dt
-        FROM FILE_INFR
+        FROM file_infr
         WHERE STOR_FILE_NM = #{storFileNm}
     </select>
 

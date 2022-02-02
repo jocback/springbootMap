@@ -9,8 +9,6 @@ var allInfo = {
 var add_marker_text= [];
 
 var markerImageSrc = "/images/category.png"; // 마커이미지의 주소입니다. 스프라이트 이미지 입니다
-var customOverlay = null;
-//req03
 var customLbOverlayArr = [];
 var markerLabel;
 
@@ -22,11 +20,6 @@ var dataItem;
 var creFileCnt = 1;
 var modyFileCnt = 1;
 
-// 신규변수
-
-//물건 등록시 주소 가져오 20190928 req01
-// 주소-좌표 변환 객체를 생성합니다
-var geocoder = new daum.maps.services.Geocoder();
 // 상세보기 관련 소스
 var searchDataArr = new Array();
 // 이미지 시퀀
@@ -48,6 +41,10 @@ if(navigator.platform){
 // 화면 초기화 호출
 $(document).ready(function() {
 	service.onLoadEvent();
+
+	fileUtil.fileTableBody = 'fileTableTbody';
+	fileUtil.modifyFileBody = 'modyFileTbody';
+	fileUtil.bind();
 });
 
 var service = {
@@ -62,15 +59,14 @@ var service = {
 
 		map = new daum.maps.Map(mapContainer, mapOption);
 
+		// 줌 변경 이벤트
 		daum.maps.event.addListener(map, 'zoom_changed', function() {
 			service.changeMarker($(".menu_selected").attr("type"));
 		});
+		// 드래그 종료시
 		daum.maps.event.addListener(map, "dragend", function() {
 			service.changeMarker($(".menu_selected").attr("type"));
 		});
-
-//    daum.maps.event.addListener(map, "zoom_changed", function() {
-//    });
 
 		// 마커 클러스터러를 생성합니다
 		clusterer = new daum.maps.MarkerClusterer({
@@ -82,10 +78,8 @@ var service = {
 		service.changeMarker('all');
 	},
 	// 마커 수정
-	// req05 edit by hodec option 추가
 	//  changeMarker: function(type){
 	changeMarker: function(type, options){
-		service.closeOverlay();
 		//타입설정
 		mapType = type;
 
@@ -121,12 +115,6 @@ var service = {
 		// service.getProductList(searchData);
 		service.getProductList(searchData, options);
 
-	},
-
-	closeOverlay: function() {
-		if (!!customOverlay) {
-			customOverlay.setMap(null);
-		}
 	},
 
 	// 물건 정보 전체 가져오기
@@ -182,7 +170,6 @@ var service = {
 				if (!arrMin) {
 					arrMin = arr[i];
 				};
-
 				// minNum의 값과 현재 값을 비교해서 minNum값을 가장 작은 값으로 유지
 				if (arrMin < arr[i] && 5 > arr[i]) {
 					arrMin = arr[i];
@@ -198,34 +185,21 @@ var service = {
 				case 9:
 					icon ="rental";
 					icoTxt = "전";
-					if(arrMin==1){
-						icon ="1";
-					}else if(arrMin==2){
-						icon ="1_5";
-					}else if(arrMin==3){
-						icon ="2";
-					}else if(arrMin==4){
-						icon ="3";
-					}else if(arrMin==5){
-						icon ="4";
-					}else{
-						icon ="rental";
-						icoTxt = "";
+					if(arrMin==1){ icon ="1";
+					}else if(arrMin==2){ icon ="1_5";
+					}else if(arrMin==3){ icon ="2";
+					}else if(arrMin==4){ icon ="3";
+					}else if(arrMin==5){ icon ="4";
+					}else{ icon ="rental"; icoTxt = "";
 					}break;
 				case 8: icon ="month"; break;
 				case 7:
-					if(arrMin==1){
-						icon ="1_t";
-					}else if(arrMin==2){
-						icon ="1_5_t";
-					}else if(arrMin==3){
-						icon ="2_t";
-					}else if(arrMin==4){
-						icon ="3_t";
-					}else if(arrMin==5){
-						icon ="4_t";
-					}else{
-						icon ="4_t";
+					if(arrMin==1){ icon ="1_t";
+					}else if(arrMin==2){ icon ="1_5_t";
+					}else if(arrMin==3){ icon ="2_t";
+					}else if(arrMin==4){ icon ="3_t";
+					}else if(arrMin==5){ icon ="4_t";
+					}else{ icon ="4_t";
 					}break;
 				case 6: icon ="duplex"; break;
 				case 5: icon ="4"; break;
@@ -237,11 +211,8 @@ var service = {
 			}
 
 			var imageSize = new daum.maps.Size(22, 26);
-
 			var imageOptions = service.setImageOptions(icon);
-
 			var LatLng = new daum.maps.LatLng(itm.latitude, itm.longitude);
-
 			var title = itm.productNm;
 
 			// 마커이미지와 마커를 생성합니다
@@ -511,7 +482,7 @@ var service = {
 
 	},
 	setCenterMap: function(latitude,longitude,key) {
-		service.closeOverlay();
+
 		// 이동할 위도 경도 위치를 생성합니다
 		var moveLatLon = new daum.maps.LatLng(latitude, longitude);
 
@@ -525,15 +496,7 @@ var service = {
 	},
 	// 물건 등록 창열기
 	createProduct: function() {
-
-		// 파일 배열 초기화
-		fileList = new Array();
-		// 파일 사이즈 배열 초기화
-		fileSizeList = new Array();
-		// 파일 인덱스 초기화
-		fileIndex = 0;
-
-
+		fileUtil.init();
 		$('#creProNm').val("");
 		$('#creAddress').val("");
 		$('#creMemo').val("");
@@ -546,7 +509,6 @@ var service = {
 
 		$("#fileTableTbody").html("");
 
-		service.closeOverlay();
 		$("#crePopup").fadeIn(350);
 	},
 
@@ -607,7 +569,6 @@ var service = {
 //	location.reload();
 
 		$("#crePopup").hide();
-		service.closeOverlay();
 
 		// 이동할 위도 경도 위치를 생성합니다
 		var moveModify = new daum.maps.LatLng($("#creLat").val(), $("#creLog").val());
@@ -620,7 +581,6 @@ var service = {
 
 	},
 	removeOverlay:function(){
-		service.closeOverlay();
 		removeEvent = true;
 		daum.maps.event.addListener(map, "click", function(mouseEvent) {
 			if (removeEvent) {
@@ -651,8 +611,6 @@ var service = {
 	// 물건 상세
 	detailOverlay: function(itm){
 		dataItem=itm;
-
-		service.closeOverlay();
 
 		var str="";
 		str2="";
@@ -717,14 +675,7 @@ var service = {
 	// 물건 수정
 	modifyOverlay: function() {
 
-		// 파일 배열 초기화
-		fileList = new Array();
-		// 파일 사이즈 배열 초기화
-		fileSizeList = new Array();
-		// 파일 인덱스 초기화
-		fileIndex = 0;
-
-		service.closeOverlay();
+		fileUtil.init();
 
 		$("#modyProductId").val(dataItem.productId);
 		$("#modyProNm").val(dataItem.productNm);
@@ -918,7 +869,6 @@ var service = {
 		alert("물건수정이 완료되었습니다.");
 		$("#modyPopup").hide();
 		$("#dtlPopup").hide();
-		service.closeOverlay();
 
 		// 이동할 위도 경도 위치를 생성합니다
 		var moveModify = new daum.maps.LatLng($("#creLat").val(), $("#creLog").val());
@@ -946,7 +896,6 @@ var service = {
 		alert("삭제가 완료되었습니다.");
 		$("#modyPopup").hide();
 		$("#dtlPopup").hide();
-		service.closeOverlay();
 
 		// 이동할 위도 경도 위치를 생성합니다
 		var moveModify = new daum.maps.LatLng($("#creLat").val(), $("#creLog").val());
@@ -1129,13 +1078,6 @@ function popImg(){
 	$("#imagePopup").css("overflow","hidden");
 	scWidth = $("#imagePopup").width()*0.93;
 	scHeight = $("#imagePopup").height()*0.95;
-//	$("#imagePopup2").css("width",scWidth);
-//	$("#imagePopup2").css("height",scHeight);
-
-//      var testimg = $("#testimg");
-//if (testimg.exif("Orientation") == 6) {
-//    testimg.addClass("rotate90");
-//}
 
 	$("#imagePopup").html("");
 	var lyrContent =
@@ -1178,27 +1120,6 @@ function popClose(){
 	$("#imagePopup").fadeOut(350);
 }
 
-//물건 등록시 주소 가져오 20190928 req01
-function searchDetailAddrFromCoords(coords, callback) {
-	// 좌표로 법정동 상세 주소 정보를 요청합니다
-	geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
-}
-
-//20191003 req01 by hodec 우편번호 검색 api추가
-var postcodeService = {
-	openPopup: function() {
-		new daum.Postcode({
-			oncomplete: function(data) {
-				$("#creAddress").val(data.jibunAddress)
-				// 주소로 좌표를 검색합니다
-				geocoder.addressSearch($("#creAddress").val(), function(result, status) {
-					$("#creLat").val(result[0].y); // latitude
-					$("#creLog").val(result[0].x); // longitude
-				});
-			}
-		}).open();
-	}
-}
 
 //20191006 투자 구옥 추가 hodec
 var mapTypeService = {
@@ -1222,223 +1143,12 @@ var fileSizeList = new Array();
 var uploadSize = 500;
 //등록 가능한 총 파일 사이즈 MB
 var maxUploadSize = 500;
-var dropZone = $(".upload_img");
-
-//Drag기능
-dropZone.on('dragenter',function(e){
-	e.stopPropagation();
-	e.preventDefault();
-	// 드롭다운 영역 css
-	dropZone.css('background-color','#E3F2FC');
-});
-dropZone.on('dragleave',function(e){
-	e.stopPropagation();
-	e.preventDefault();
-	// 드롭다운 영역 css
-	dropZone.css('background-color','#FFFFFF');
-});
-dropZone.on('dragover',function(e){
-	e.stopPropagation();
-	e.preventDefault();
-	// 드롭다운 영역 css
-	dropZone.css('background-color','#E3F2FC');
-});
-dropZone.on('drop',function(e){
-	e.preventDefault();
-	// 드롭다운 영역 css
-	dropZone.css('background-color','#FFFFFF');
-
-	var files = e.originalEvent.dataTransfer.files;
-	if(files != null){
-		if(files.length < 1){
-			alert("폴더 업로드 불가");
-			return;
-		}
-		selectFile(files,$(this).data("type"));
-	}else{
-		alert("ERROR");
-	}
-});
-
-//파일 선택시
-function selectFile(files,type){
-
-	// 다중파일 등록
-	if(files != null){
-		for(var i = 0; i < files.length; i++){
-			// 파일 이름
-			var fileName = files[i].name;
-			var fileNameArr = fileName.split("\.");
-			// 확장자
-			var ext = fileNameArr[fileNameArr.length - 1];
-			// 파일 사이즈(단위 :MB)
-			var fileSize = files[i].size / 1024 / 1024;
-
-			if(cmpFileChk(fileName,files[i].size,type)=="Y"){
-				break;
-			}else{
-				if($.inArray(ext, ['exe', 'bat', 'sh', 'java', 'jsp', 'html', 'js', 'css', 'xml']) >= 0){
-					// 확장자 체크
-					alert("등록 불가 확장자");
-					break;
-				}else if(fileSize > uploadSize){
-					// 파일 사이즈 체크
-					alert("용량 초과\n업로드 가능 용량 : " + uploadSize + " MB");
-					break;
-				}else{
-					// 전체 파일 사이즈
-					totalFileSize += fileSize;
-					// 파일 배열에 넣기
-					fileList[fileIndex] = files[i];
-					// 파일 사이즈 배열에 넣기
-					fileSizeList[fileIndex] = fileSize;
-					// 업로드 파일 목록 생성
-					addFileList(files[i],type);
-//				addFileList(fileIndex, fileName, fileSize);
-					// 파일 번호 증가
-					fileIndex++;
-				}
-			}
-
-		}
-	}else{
-		alert("ERROR");
-	}
-}
-
-function cmpFileChk(fileName,fileSize,type){
-	var cmpYn="N";
-	if(type=='modify'){
-		var $addTrLength = $("#modyFileTbody .add_div");
-		for (var j = 0; j < $addTrLength.length; j++) {
-			var id = $addTrLength.eq(j).data("chk");
-			if(typeof id === 'undefined'){
-				var cmpFileSize = $addTrLength.eq(j).children('input:hidden').eq(3).val();
-				var rgstFileNm = $addTrLength.eq(j).children('input:hidden').eq(5).val();
-				if(fileName==rgstFileNm && fileSize==cmpFileSize){
-					alert("중복된 파일입니다.");
-					cmpYn = "Y";
-				}
-			}
-		}
-	}
-	$.each(fileList, function(k, v) {
-		if(v.name!=='undefined' && v.size!=='undefined' && fileName==v.name && fileSize==v.size){
-			alert("중복된 파일입니다.");
-			cmpYn = "Y";
-		}
-	});
-
-	return cmpYn;
-}
-
-
-//업로드 파일 목록 생성
-function addFileList(file,type){
-	var html = "";
-	html += '						<div class="add_div" data-chk="new">';
-	html += '							<div class="img_title_name">'+file.name+'</div>';
-	html += '							<div class="img_file_border">';
-	html += '								<button class="file_sort" type="button" onclick="service.crtMoveUp(this)"><img  src="/images/file_arrow_up.png"></button>';
-	html += '								<button class="file_sort" type="button" onclick="service.crtMoveDown(this)"><img  src="/images/file_arrow.png"></button>';
-	html += '								<button class="file_sort" type="button" onclick="service.crtFileDelete(this)"><img  src="/images/del_x.png"></button>';
-	html += '							</div>';
-	html += '							<div style="clear:both;"></div>';
-	html += '						</div>';
-	if(type=="create"){
-		$('#fileTableTbody').append(html);
-	}else if(type=="modify"){
-		$('#modyFileTbody').append(html);
-	}
-}
+//var dropZone = $(".upload_img");
+var dropZone = null;
 
 if(getCookie('searchType')=='N'){
 	$('#list_panel_content').hide();
 	$("#main-content").addClass("list_panel_content-closed");
 	$(".fa-bars-arrow img").attr("src", "images/toggle_right_panel_btn.png");
 	$(".tab-button").css({"background-image": "url(images/btn_tab_open.png)"});
-}
-
-// 우편번호 찾기 찾기 화면을 넣을 element
-var element_wrap = document.getElementById('addWrap');
-
-function foldDaumPostcode() {
-	// iframe을 넣은 element를 안보이게 한다.
-	element_wrap.style.display = 'none';
-}
-
-function sample3_execDaumPostcode(addVal) {
-	// 현재 scroll 위치를 저장해놓는다.
-	var currentScroll = Math.max(document.body.scrollTop, document.documentElement.scrollTop);
-	new daum.Postcode({
-		oncomplete: function(data) {
-			console.log('주소검색결과');
-			console.log(data);
-			// 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
-
-			// 각 주소의 노출 규칙에 따라 주소를 조합한다.
-			// 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-			var addr = ''; // 주소 변수
-			var extraAddr = ''; // 참고항목 변수
-
-			//사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-			if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-				addr = data.roadAddress;
-			} else { // 사용자가 지번 주소를 선택했을 경우(J)
-				addr = data.jibunAddress;
-			}
-
-			// 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-			if(data.userSelectedType === 'R'){
-				// 법정동명이 있을 경우 추가한다. (법정리는 제외)
-				// 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-				if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
-					extraAddr += data.bname;
-				}
-				// 건물명이 있고, 공동주택일 경우 추가한다.
-				if(data.buildingName !== '' && data.apartment === 'Y'){
-					extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-				}
-				// 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-				if(extraAddr !== ''){
-					extraAddr = ' (' + extraAddr + ')';
-				}
-				// 조합된 참고항목을 해당 필드에 넣는다.
-//                document.getElementById("sample3_extraAddress").value = extraAddr;
-
-			} else {
-//                document.getElementById("sample3_extraAddress").value = '';
-			}
-
-			// 우편번호와 주소 정보를 해당 필드에 넣는다.
-//            document.getElementById('sample3_postcode').value = data.zonecode;
-			document.getElementById(addVal).value = addr;
-
-			$("#"+addVal).val(data.address)
-			// 주소로 좌표를 검색합니다
-			geocoder.addressSearch($("#"+addVal).val(), function(result, status) {
-				$("#creLat").val(result[0].y); // latitude
-				$("#creLog").val(result[0].x); // longitude
-			});
-
-			// 커서를 상세주소 필드로 이동한다.
-//            document.getElementById("sample3_detailAddress").focus();
-
-			// iframe을 넣은 element를 안보이게 한다.
-			// (autoClose:false 기능을 이용한다면, 아래 코드를 제거해야 화면에서 사라지지 않는다.)
-			element_wrap.style.display = 'none';
-
-			// 우편번호 찾기 화면이 보이기 이전으로 scroll 위치를 되돌린다.
-			document.body.scrollTop = currentScroll;
-		},
-		// 우편번호 찾기 화면 크기가 조정되었을때 실행할 코드를 작성하는 부분. iframe을 넣은 element의 높이값을 조정한다.
-		onresize : function(size) {
-			element_wrap.style.height = size.height+'px';
-		},
-		width : '100%',
-		height : '100%'
-	}).embed(element_wrap);
-
-	// iframe을 넣은 element를 보이게 한다.
-	element_wrap.style.display = 'block';
 }

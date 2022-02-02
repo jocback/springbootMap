@@ -17,72 +17,27 @@
     <div id="map_wrap" class="map_wrap">
         <div id="map" class="map">
             <div class="onoff">
-                <!-- <div class="onoff-top">
-                  지도 검색 조건
-                </div>
-                <div class="onoff-bottom">
-                  <label class="radio">
-                    <input type="radio" name="type" value="" checked />
-                    <span class="cb"></span>
-                    <span>전체</span>
-                  </label>
-
-                  <label class="radio">
-                    <input type="radio" name="type" value="" />
-                    <span class="cb"></span>
-                    <span>신축</span>
-                  </label>
-
-                  <label class="radio">
-                    <input type="radio" name="type" value="" />
-                    <span class="cb"></span>
-                    <span>구옥</span>
-                  </label>
-
-                  <label class="radio">
-                    <input type="radio" name="type" value="" />
-                    <span class="cb"></span>
-                    <span>전세</span>
-                  </label>
-                </div> -->
-
-                <!-- 20191006 투자 구옥 추가 hodec -->
-                <!--            <div class="category"> -->
                 <div class="category" id="category">
                     <ul>
-                        <!-- 20191006 투자 구옥 추가 hodec -->
-                        <!--            <li id="allMenu" class="all" onclick="service.changeMarker('all')"> -->
                         <li id="allMenu" type="all" onclick="mapTypeService.handle(this)">
                             <span class="ico_comm ico_all_item"></span>
                             전체
                         </li>
-                        <!-- 20191006 투자 구옥 추가 hodec -->
-                        <!--            <li id="newMenu" onclick="service.changeMarker('new')">-->
                         <li id="newMenu" type="new" onclick="mapTypeService.handle(this)">
                             <span class="ico_comm ico_new_item"></span>
                             신축
                         </li>
 
-                        <!-- 20191006 투자 구옥 추가 hodec -->
                         <li id="oldMenu" type="old" onclick="mapTypeService.handle(this)">
-                            <!--                <li id="oldMenu" class="old" onclick="service.changeMarker('old')"> -->
                             <span class="ico_comm ico_old_item"></span>
                             구옥
                         </li>
 
                         <!-- 20191006 투자 구옥 추가 hodec -->
                         <li id="rentalMenu" type="rental" onclick="mapTypeService.handle(this)">
-                            <!--              <li id="rentalMenu" class="rental" onclick="service.changeMarker('rental')"> -->
                             <span class="ico_comm ico_rental_item"></span>
                             전세
                         </li>
-                        <!-- 20191006 투자 구옥 추가 hodec -->
-                        <!--                 <li id="investMenu" type="invest" onclick="mapTypeService.handle(this)"> -->
-                        <!--                   <span class="ico_comm ico_1_5_item"></span> -->
-                        <!--                   투자 -->
-                        <!--                 </li> -->
-                        <!-- //20191006 투자 구옥 추가 hodec -->
-                        <!-- 20191102 투자 월세 추가 hodec -->
                         <li id="investMenu" type="month" onclick="mapTypeService.handle(this)">
                             <span class="ico_comm ico_month_item"></span>
                             월세
@@ -159,22 +114,6 @@
                     </div>
                     <div class="list-result-area">
                         <ul id="searchList">
-                            <!-- <li>
-                              <div class="tooltip">
-                                <p class="tooltip-title">하나아이파크빌</p>
-                                <hr />
-                                <dl>
-                                  <dt class="tooltip-address">수유동281-45 /12</dt>
-                                  <dd class="txt_post">
-                                    1동 2/1 189 3/1 225 262 3/2 279 2동 3/1 249 254 부재중
-                                    답사요망 010-2222-2222 실장 010-2222-2222 실장
-                                    010-2222-2222 실장1동 2/1 189 3/1 225 262 3/2 279 2동
-                                    3/1 249 254 부재중 답사요망 010-2222-2222 실장
-                                    010-2222-2222 실장 010-2222-2222 실장
-                                  </dd>
-                                </dl>
-                              </div>
-                            </li> -->
                         </ul>
                     </div>
                 </div>
@@ -246,7 +185,7 @@
         </div>
 
 
-        <!-- modal영역시작 -->
+        <!-- modal영역시작 매물추가-->
         <div class="popup" id="crePopup" data-popup="popup-1">
             <div class="popup-inner-modal">
                 <div class="popup-title">
@@ -351,11 +290,6 @@
                                     <span class="cb"></span>
                                     <span>구옥</span>
                                 </label>
-                                <!-- 			               <label class="checkbox"> -->
-                                <!-- 			                <input type="checkbox" name="creRoomType" value="11" /> -->
-                                <!-- 			                <span class="cb"></span> -->
-                                <!-- 			                <span>투자</span> -->
-                                <!-- 			              </label> -->
                             </td>
                         </tr>
                         <tr>
@@ -363,28 +297,17 @@
                             <td colspan="2">
                                 <div class='upload_img' data-type="create">사진을 올려주세요</div>
                                 <div id="fileTableTbody">
-                                    <!-- 							<div class='add_div' style="display:none;">	파일추가하면 생성되야 할 div  -->
-                                    <!-- 								<div class='img_title_name'>파일이름이길어져도 제목처럼 짧게 나오도록 할것이다 우아니우아아아우아우우아우우</div> -->
-                                    <!-- 								<div class='img_file_border'> -->
-                                    <!-- 									<button class="file_sort" type="button" onclick="service.crtMoveUp(this)"><img  src="/resources/images/file_arrow_up.png"></button> -->
-                                    <!-- 									<button class="file_sort" type="button" onclick="service.crtMoveDown(this)"><img  src="/resources/images/file_arrow.png"></button> -->
-                                    <!-- 									<button class="file_sort" type="button" onclick="service.crtFileDelete(this)"><img  src="/resources/images/del_x.png"></button> -->
-                                    <!-- 								</div> -->
-                                    <!-- 								<div style='clear:both;'></div> -->
-                                    <!-- 							</div> -->
                                 </div>
                             </td>
-                            <!-- park -->
                         </tr>
                         </tbody>
                     </table>
-                    <!--             <button class="btn" id="fileAdd" onclick="service.addFileInput()">파일추가</button> -->
                 </div>
             </div>
         </div>
-        <!-- modal영역끝 -->
+        <!-- modal영역끝 매물추가 -->
 
-        <!-- modal영역시작 -->
+        <!-- modal영역시작 매물수정 -->
         <div class="popup" id="modyPopup" data-popup="popup-2">
             <div class="popup-inner-modal">
                 <div class="popup-title">
@@ -485,46 +408,13 @@
                                     <span class="cb"></span>
                                     <span>구옥</span>
                                 </label>
-                                <!-- 			               <label class="checkbox"> -->
-                                <!-- 			                <input type="checkbox" name="modyRoomType" value="11" /> -->
-                                <!-- 			                <span class="cb"></span> -->
-                                <!-- 			                <span>투자</span> -->
-                                <!-- 			              </label> -->
                             </td>
                         </tr>
                         <tr>
-                            <!--                     <td>사진</td> -->
-                            <!--                     <td colspan="2"> -->
-                            <!--                     <table	 class="table1" cellspacing="3" align="center"> -->
-                            <!-- 						 <colgroup> -->
-                            <!-- 			                  <col width="75%" /> -->
-                            <!-- 			                  <col width="25%" /> -->
-                            <!-- 			                </colgroup> -->
-                            <!-- 							<tbody id="modyFileTbody"> -->
-                            <!-- 							<tr> -->
-                            <!-- 								<td><input type="file"name="file_0" id="file_0"></td> -->
-                            <!-- 								<td> -->
-                            <!-- 									<button type="button" onclick="service.moveUp(this)">올리기</button> -->
-                            <!-- 									<button type="button" onclick="service.moveDown(this)">내리기</button> -->
-                            <!-- 									<button type="button" onclick="service.moveDown(this)">삭제</button> -->
-                            <!-- 								</td> -->
-                            <!-- 							</tr> -->
-                            <!-- 							</tbody> -->
-                            <!-- 						</table> -->
-                            <!--                     </td> -->
                             <td>사진</td>
                             <td colspan="2">
                                 <div class='upload_img' data-type="modify">사진을 올려주세요</div>
                                 <div id="modyFileTbody">
-                                    <!-- 							<div class='add_div' style="display:none;">	파일추가하면 생성되야 할 div  -->
-                                    <!-- 								<div class='img_title_name'>파일이름이길어져도 제목처럼 짧게 나오도록 할것이다 우아니우아아아우아우우아우우</div> -->
-                                    <!-- 								<div class='img_file_border'> -->
-                                    <!-- 									<button class="file_sort" type="button" onclick="service.crtMoveUp(this)"><img  src="/resources/images/file_arrow_up.png"></button> -->
-                                    <!-- 									<button class="file_sort" type="button" onclick="service.crtMoveDown(this)"><img  src="/resources/images/file_arrow.png"></button> -->
-                                    <!-- 									<button class="file_sort" type="button" onclick="service.crtFileDelete(this)"><img  src="/resources/images/del_x.png"></button> -->
-                                    <!-- 								</div> -->
-                                    <!-- 								<div style='clear:both;'></div> -->
-                                    <!-- 							</div> -->
                                 </div>
                             </td>
                         </tr>
@@ -541,17 +431,15 @@
                         </tbody>
                     </table>
                     <button class="btn" id="btn_delete">삭제</button>
-                    <!--               <button class="btn" id="fileModyAdd" onclick="service.addModyFileInput()">파일추가</button> -->
                 </div>
             </div>
         </div>
-        <!-- modal영역끝 -->
+        <!-- modal영역끝 매물수정 -->
 
 
     </div>
 
-    <!-- modal영역시작 -->
-    <!-- park -->
+    <!-- modal영역시작 이미지 상세 -->
     <div class="popup" id="imagePopup" data-popup="popup-3" style="width:100%; height:100%; z-index:100;">
         <div class="popup-inner-newimage" id="imagePopup2">
             <div class="popup-title">
@@ -566,8 +454,7 @@
             </div>
         </div>
     </div>
-    <!-- park -->
-    <!-- modal영역끝 -->
+    <!-- modal영역끝 이미지 상세 -->
 
     <div id="addWrap"
          style="display:none;border:1px solid;width:500px;max-height:466px;margin:5px 0;overflow:auto;z-index:10;"
@@ -580,6 +467,6 @@
 </div>
 
 
-<script src="/js/map/map.js?aaa"></script>
+<script src="/js/map/map.js"></script>
 </body>
 </html>

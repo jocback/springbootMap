@@ -84,7 +84,7 @@ var common = {
 
 $(document).ready(function() {
 
-  var header = $('header');
+  var header = $('head');
 
   $(window).scroll(function(e) {
     if (header.offset().top >= 10) {

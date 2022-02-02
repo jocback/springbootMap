@@ -28,6 +28,13 @@ public class MapController {
         return "/map/map";
     }
 
+    // 매물조회 페이지(NEW)
+    @RequestMapping(value="/map/map_new", method = RequestMethod.GET)
+    public String map_new(Model model) {
+        model.addAttribute("name", "map");
+        return "/map/map_new";
+    }
+
     // 물건 조회
     @RequestMapping(value="/map/productList", method = RequestMethod.POST)
     @ResponseBody
