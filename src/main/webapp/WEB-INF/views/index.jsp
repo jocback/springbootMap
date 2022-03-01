@@ -13,5 +13,12 @@
 <body>
 Hello World<br>
 이 컨트롤러의 NAME은 ${name} 입니다.1111
+<button type="button" onclick="testBridge()">브릿지 테스트</button>
+<script>
+    function testBridge(){
+        window.MyApp.callMessage();
+    }
+</script>
+
 </body>
 </html>
